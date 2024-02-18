@@ -7,11 +7,12 @@ class Spider {
     private const  DEFAULT_CURL_CONFIG = [
 
         CURLOPT_RETURNTRANSFER => 1,
-        CURLOPT_COOKIEFILE => './cookies/cookies.txt',
-        CURLOPT_COOKIEJAR => './cookies/cookies.txt',
-        CURLOPT_HTTPHEADER => ['Content-Type: application/x-www-form-urlencoded', 'Cache-Control: max-age=0', 'Connection: keep-alive'],
-        CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36',
-        CURLOPT_FOLLOWLOCATION => 1
+        CURLOPT_COOKIEFILE     => './cookies/cookies.txt',
+        CURLOPT_COOKIEJAR      => './cookies/cookies.txt',
+        CURLOPT_HTTPHEADER     => ['Content-Type: application/x-www-form-urlencoded', 'Cache-Control: max-age=0', 'Connection: keep-alive'],
+        CURLOPT_USERAGENT      => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36',
+        CURLOPT_FOLLOWLOCATION => 1,
+        CURLOPT_HEADER         => 1
 
     ];
 
@@ -74,18 +75,24 @@ class Spider {
 
     private function searchByCNPJ(): void
     {
-        $cnpj = readline("Por favor, digite o CNPJ desejado: ");
+        $cnpj = (string)readline("Por favor, digite o CNPJ desejado: ");
 
         $this->captcha();
 
         $captcha = readline("Por favor, digite o valor do Captcha: ");
 
+
         $form    = [
             '_method' => 'POST',
             'data[Sintegra1][CodImage]' => $captcha,
             'data[Sintegra1][Cnpj]' => $cnpj,
-            'empresa' => 'Consultar Empresa'
+            'empresa' => 'Consultar Empresa',
+            'data[Sintegra1][Cadicms]' => '',
+            'data[Sintegra1][CadicmsProdutor]' => '',
+            'data[Sintegra1][CnpjCpfProdutor]' => ''
         ];
+
+
 
         $response = $this->request(self::POST_METHOD, "/sintegra/", $form);
         $company  = $response;
@@ -99,6 +106,8 @@ class Spider {
         try {
             $image = $this->request(self::GET_METHOD,  sprintf("/sintegra/captcha?".(float)rand()));
     
+            $image      = substr($image['response'], $image['headers']['headerSize']);
+            
             file_put_contents($this->captchaPath, $image);
     
             if (!file_exists($this->captchaPath)) {
@@ -128,7 +137,7 @@ class Spider {
     }
 
     
-    private function request(string $method, string $endpoint, array $formData = []): string
+    private function request(string $method, string $endpoint, array $formData = []): array
     {
         $url  = $this->service . $endpoint;
 
@@ -145,6 +154,7 @@ class Spider {
 
         curl_setopt_array($curl, $options);
         
+
         if ($this->debug === true) {
             echo sprintf("\n\n %s ................................... %s \n\n", $method, $url);
         }
@@ -156,9 +166,14 @@ class Spider {
             exit;
         }
 
+        $headerSize = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
+        $httpCode   = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
         curl_close($curl);
 
-        return $response;
+        return ['response' => $response, 'headers' => [
+            'headerSize' => $headerSize,
+            'httpCode'   => $httpCode
+        ]];
     }
 }
