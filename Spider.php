@@ -4,6 +4,14 @@ declare(strict_types=1);
 class Spider {
     
 
+    
+    private const DEFAULT_SPIDER_COMMANDS = [
+
+        ['description' => 'Realizar buscar por CNPJ.', 'action' => 'searchByCNPJ'],
+        ['description' => 'Realizar buscar por Inscrição Estadual.', 'action' => ''],
+
+    ];
+
     private const  DEFAULT_CURL_CONFIG = [
 
         CURLOPT_RETURNTRANSFER => 1,
@@ -20,16 +28,14 @@ class Spider {
     private const GET_METHOD  = 'GET';
 
     private const DEFAULT_REGEX = [
-        
+
+        'error_message'    => '/<td\s+class="erro_msg_custom">(.*?)<\/td>/',
+        'btn_inscription'  => '/<button\s+type="submit"\s+id="consultar"\s+name="consultar"\s+label="">\s*(.*?)\s*<\/button>/',
+        'next_inscription' => '/value="(.*?)"/'
+
     ];
     
 
-    private const DEFAULT_SPIDER_COMMANDS = [
-
-        ['description' => 'Realizar buscar por CNPJ.', 'action' => 'searchByCNPJ'],
-        ['description' => 'Realizar buscar por Inscrição Estadual.', 'action' => ''],
-
-    ];
 
 
     public function __construct(
@@ -92,12 +98,10 @@ class Spider {
             'data[Sintegra1][CnpjCpfProdutor]' => ''
         ];
 
-
-
         $response = $this->request(self::POST_METHOD, "/sintegra/", $form);
-        $company  = $response;
+        $data     = $this->anothersInscriptions($response['response']);
 
-        print_r($company);
+        print_r($data);
         exit;
     }
 
@@ -127,13 +131,40 @@ class Spider {
     }
 
 
-    private function parse(string $response)
+    private function anothersInscriptions(string $response): array
     {
-       $data = [];
+        $inscriptions = [];
 
-       while(true) {
-         
-       }
+        while(true) {
+            
+            $inscriptions[] = html_entity_decode($response);
+
+            preg_match(self::DEFAULT_REGEX['btn_inscription'], $response, $btnNext);
+            if (empty($btnNext)) {  
+                break;
+            }
+
+            preg_match_all(self::DEFAULT_REGEX['next_inscription'], $response, $matches);
+            $response  = $this->nextPage($matches[1][1]);
+            
+        }
+
+        return $inscriptions;
+    }
+
+    private function nextPage(string $previewsValue) 
+    {
+        $value = str_replace(['value="', '"'], "", $previewsValue);
+
+        $form = [
+            '_method' => 'POST',
+            'data[Sintegra1][campoAnterior]: ' => $value,
+            'consultar' => '',
+        ];
+
+        $request = $this->request(self::POST_METHOD, '/sintegra/sintegra1/consultar', $form);
+
+        return $request['response'];
     }
 
     
@@ -171,9 +202,12 @@ class Spider {
 
         curl_close($curl);
 
-        return ['response' => $response, 'headers' => [
-            'headerSize' => $headerSize,
-            'httpCode'   => $httpCode
-        ]];
+        return [
+            'response' => $response, 
+            'headers'  => [
+                'headerSize' => $headerSize,
+                'httpCode'   => $httpCode
+            ] 
+        ];
     }
 }
