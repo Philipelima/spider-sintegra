@@ -57,7 +57,7 @@ O spider irá realizar o download do captcha solicitado pelo sintegra, e lhe mos
 3. Abra a imagem que se encontra no caminho mostrado a cima e digite o texto apresentado na imagem:
 
 <center>
-    <img src="./.github/captcha.png" alt="Digite o cnpj">
+    <img src="./.github/captcha_exemple.png" alt="Digite o cnpj">
 </center>
 
 Se o captcha for digitado errado, a seguinte mensagem de erro aparecerá para você:
