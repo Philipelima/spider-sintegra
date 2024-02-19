@@ -1,5 +1,8 @@
 # Spider Sintegra
 
+![PHP](https://img.shields.io/static/v1?label=PHP&labelColor=07a0f8&message=8.2.12+CLI&color=000000&logo=PHP&logoColor=ffffff&style=flat-square)
+![CURL](https://img.shields.io/static/v1?label=CURL&labelColor=eb3c3c&message=+&color=000000&logo=CURL&logoColor=ffffff&style=flat-square)
+
 Em um breve resumo, um spider é um sistema para captura de informações em sites da internet.
 
 O spider sintegra tem o propósito de capturar informações sobre inscrições estaduais cadastrados no estado do Paraná.
