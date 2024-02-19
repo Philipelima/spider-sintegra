@@ -38,14 +38,14 @@ class Spider {
         $this->searchByCNPJ();
     }
 
-    public function debug(bool $debugOn = true)
+    public function debug(bool $debugOn = true): void
     {
         $this->debug = $debugOn;
     }
 
     private function searchByCNPJ(): void
     {
-        $cnpj = trim(readline("Por favor, digite o CNPJ desejado: "));
+        $cnpj = trim(readline("Por favor, digite o CNPJ que deseja buscar: "));
         
         $this->captcha();
         
@@ -167,7 +167,7 @@ class Spider {
         return ['codigo' => $code, 'descricao' => trim($description)];
     }
 
-    private function labels(array $labels) 
+    private function labels(array $labels): array
     {
         array_pop($labels);
         return array_map(function(string $label) {
@@ -192,7 +192,7 @@ class Spider {
         }, $labels);
     }
 
-    private function error(string $response)
+    private function error(string $response): void
     {
         if (preg_match(self::DEFAULT_REGEX['error_message'], $response, $matches)) {
             $message = mb_convert_encoding($matches[1], 'UTF-8', 'ISO-8859-1');
