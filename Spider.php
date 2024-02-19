@@ -35,7 +35,7 @@ class Spider {
     public function run(): void
     {
         echo "\n\nOlá! \n\n";
-        $this->searchByCNPJ();
+        $this->searchByCNPJOrIe();
     }
 
     public function debug(bool $debugOn = true): void
@@ -43,19 +43,25 @@ class Spider {
         $this->debug = $debugOn;
     }
 
-    private function searchByCNPJ(): void
+    private function searchByCNPJOrIe(): void
     {
-        $cnpj = trim(readline("Por favor, digite o CNPJ que deseja buscar: "));
+        $document = trim(readline("Por favor, digite o CNPJ ou Inscrição Estadual da empresa que deseja buscar: "));
         
+        if (strlen(str_replace('-', '', $document)) === 10) {
+            $ie   = $document;
+        } else {
+            $cnpj = $document;
+        }
+
         $this->captcha();
         
         $captcha = readline("Por favor, digite o valor do Captcha: ");
         $form = [
             '_method' => 'POST',
             'data[Sintegra1][CodImage]' => $captcha,
-            'data[Sintegra1][Cnpj]' => $cnpj,
+            'data[Sintegra1][Cnpj]' => $cnpj ?? '',
             'empresa' => 'Consultar Empresa',
-            'data[Sintegra1][Cadicms]' => '',
+            'data[Sintegra1][Cadicms]' => $ie ?? '',
             'data[Sintegra1][CadicmsProdutor]' => '',
             'data[Sintegra1][CnpjCpfProdutor]' => ''
         ];
@@ -188,7 +194,6 @@ class Spider {
             if ($label === 'início das atividades') {
                 return "data_inicio";
             }
-
             $label = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $label);
             $label = preg_replace("/[^a-zA-Z0-9 ]+/", "", $label); // remove o ' que é inserido pelo icov 
             return str_replace(' ', '_', $label);
