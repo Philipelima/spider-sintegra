@@ -193,8 +193,8 @@ class Spider {
             if ($label === 'início das atividades') {
                 return "data_inicio";
             }
-            $label = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $label);
-            $label = preg_replace("/[^a-zA-Z0-9 ]+/", "", $label); // remove o ' que é inserido pelo icov 
+            $label = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $label); // remove os acentos das palavras. 
+            $label = preg_replace("/[^a-zA-Z0-9 ]+/", "", $label);     //  remove o ' que é inserido pelo icov ao remover os acentos.
             return str_replace(' ', '_', $label);
         }, $labels);
     }
