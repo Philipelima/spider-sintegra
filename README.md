@@ -4,6 +4,12 @@ Em um breve resumo, um spider é um sistema para captura de informações em sit
 
 O spider sintegra tem o propósito de capturar informações sobre inscrições estaduais cadastrados no estado do Paraná.
 
+
+||  |   
+|:----------:|:----------:|
+|   Versão PHP CLI | 8.2.12       | 
+
+
 Para rodar esse projeto em sua máquina, basta clonar este repositório da seguinte forma: 
 
 ~~~bash
