@@ -133,8 +133,8 @@ class Spider {
                         if ($key === 'atividade_principal') {
                             $value = $this->economicActivity($value);
                         }
-                        if($key === 'atividades_secundaria') {
-                            $value = $this->economicActivies($value);
+                        if($key === 'atividades_secundarias') {
+                            $value = $this->economicActivities($value);
                         }
                         $result[$key] = $value;
                     }
@@ -146,18 +146,18 @@ class Spider {
         return $companies;
     }
 
-    private function economicActivies(string $value): array
+    private function economicActivities(string $value): array
     {
-        $activies = explode('<br />', $value);
+        $activities = explode('<br />', $value);
 
-        foreach ($activies as $key =>$activie) {
-            if(!empty($activie)) {
-                $activies[] = $this->economicActivity($activie);
+        foreach ($activities as $key => $activity) {
+            if(!empty($activity)) {
+                $activities[] = $this->economicActivity($activity);
             }
-            unset($activies[$key]);
+            unset($activities[$key]);
         }
 
-        return $activies;
+        return $activities;
     }
 
     private function economicActivity(string $principalActivity): array
@@ -180,10 +180,13 @@ class Spider {
                 return "atividade_principal";
             }
             if ($label === 'atividade(s) econômica(s) secundária(s)') {
-                return "atividades_secundaria";
+                return "atividades_secundarias";
             }
             if ($label === 'nome empresarial') {
                 return "razao_social";
+            }
+            if ($label === 'início das atividades') {
+                return "data_inicio";
             }
 
             $label = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $label);
