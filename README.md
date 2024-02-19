@@ -4,12 +4,6 @@ Em um breve resumo, um spider é um sistema para captura de informações em sit
 
 O spider sintegra tem o propósito de capturar informações sobre inscrições estaduais cadastrados no estado do Paraná.
 
-
-||  |   
-|:----------:|:----------:|
-|   Versão PHP CLI | 8.2.12       | 
-
-
 Para rodar esse projeto em sua máquina, basta clonar este repositório da seguinte forma: 
 
 ~~~bash
@@ -48,10 +42,16 @@ Caso elas não apareçam na listagem, basta habilita-las no arquivo <b>php.ini</
 
 <br>
 
-2. Informe um cnpj que você deseja buscar (ele precisa estar cadastrado no sintegra do Paraná):
-
-<img src="./.github/message_2.png" alt="Digite o cnpj">
-
+2. Informe um CNPJ ou Inscrição Estadual da empresa que você deseja consultar (ela precisa estar cadastrado no sintegra do Paraná):
+<center>
+<legend>Por CNPJ:</legend>
+    <img src="./.github/message_2.png" alt="Digite o cnpj">
+</center>
+<br>
+<center>
+<legend>Por Inscrição Estadual:</legend>
+<img src="./.github/message_2_ie.png" alt="Digite o cnpj">
+</center>
 <br>
 
 O spider irá realizar o download do captcha solicitado pelo sintegra, e lhe mostrar logo em seguida
@@ -66,9 +66,28 @@ O spider irá realizar o download do captcha solicitado pelo sintegra, e lhe mos
     <img src="./.github/captcha_exemple.png" alt="Digite o cnpj">
 </center>
 
+4. Se tudo ocorrer bem, em sua tela aparecerá um array multidimensional com informações das inscrições estaduais do CNPJ pesquisado:
+
+<center>
+    <img src="./.github/resultado_consulta.png" alt="Digite o cnpj">
+</center>
+
+
+<br><br>
+
+### Erros
+
 Se o captcha for digitado errado, a seguinte mensagem de erro aparecerá para você:
 
 <center>
     <img src="./.github/captcha_error.png" alt="Digite o cnpj">
 </center>
 
+<br><br>
+
+Caso o CNPJ digitado não for do estado do Paraná, após a resolução do captcha a seguinte mensagem de erro aparecerá para você:
+
+
+<center>
+    <img src="./.github/error_cnpj_nao_cadastrado.png" alt="Digite o cnpj">
+</center>
