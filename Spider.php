@@ -5,7 +5,6 @@ class Spider {
     
     private string $service = 'http://www.sintegra.fazenda.pr.gov.br';
   
-
     private const POST_METHOD = 'POST';
     private const GET_METHOD  = 'GET';
 
@@ -68,7 +67,7 @@ class Spider {
        
         $response = $this->request(self::POST_METHOD, "/sintegra/", $form)['response'];
         $this->error($response);
-        $data = $this->anothersInscriptions($response);
+        $data = $this->registrations($response);
 
         $company = $this->parseInfo($data);
         
@@ -92,11 +91,11 @@ class Spider {
         }
     }
 
-    private function anothersInscriptions(string $response): array
+    private function registrations(string $response): array
     {
-        $inscriptions = [];
+        $registrations = [];
         while(true) {
-            $inscriptions[] = html_entity_decode($response);
+            $registrations[] = html_entity_decode($response);
             preg_match(self::DEFAULT_REGEX['btn_inscription'], $response, $btnNext);
             if (empty($btnNext)) {  
                 break;
@@ -104,7 +103,7 @@ class Spider {
             preg_match_all(self::DEFAULT_REGEX['next_inscription'], $response, $matches);
             $response = $this->nextPage($matches[1][1]);
         }
-        return $inscriptions;
+        return $registrations;
     }
 
     private function nextPage(string $previewsValue): string
